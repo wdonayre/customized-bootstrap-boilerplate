@@ -6,7 +6,7 @@ File Structure
 --------------
 
 [your main project folder]
-	- [bower_components] //all the files inside this folder will be generated through bower.
+	- [bower_components] //all the files inside this folder will be generated through bower. --
 	|	- [bootstrap]	
 	- [dist]
 	|	- your-compiled-style.css

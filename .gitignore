@@ -2,6 +2,7 @@ production/**/*
 develop/**/
 node_modules/**/*
 bower_components/**/*
+.idea/**/*
 examples/style.css
 
 
