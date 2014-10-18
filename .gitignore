@@ -1,0 +1,10 @@
+production/**/*
+develop/**/
+node_modules/**/*
+bower_components/**/*
+examples/style.css
+
+
+.DS_Store
+npm-debug.log
+**/*/.DS_Store

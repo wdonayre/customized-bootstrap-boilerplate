@@ -1,0 +1,12 @@
+{
+    "name": "te-styles",
+    "version": "0.0.0",
+    "main":"./release/style.css",
+    "ignore":["package.json"],
+    "authors": [
+        "wdonayre <william.donayre@truste.com>"
+    ],
+    "dependencies": {
+        "bootstrap": "~3.2"
+    }
+}
