@@ -6,55 +6,91 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         // Task configuration.
         clean: {
-            dist: 'build'
+            release: [
+                "dist/**/*"
+            ]
         },
         less: {
-            dev: {
+            release: {
                 files: {
-                    'develop/css/<%= pkg.name %>.css' : 'less/init.less',
-                    'develop/css/<%= pkg.name %>-theme.css' : 'less/theme.less'
-                }
-            },
-            prod:{
-                files: {
-                    'production/css/<%= pkg.name %>.css' : 'less/init.less',
-                    'production/css/<%= pkg.name %>-theme.css' : 'less/theme.less'
+                    'dist/<%= pkg.name %>.css' : 'less/init.less'
                 }
             }
         },
         cssmin: {
             options: {
                 compatibility: 'ie8',
-                keepSpecialComments: '*',
+                keepSpecialComments: 0,
                 noAdvanced: true
             },
-            minifyCore: {
-                src: 'production/css/<%= pkg.name %>.css',
-                dest: 'production/css/<%= pkg.name %>.min.css'
+            minify: {
+                src: 'dist/<%= pkg.name %>.css',
+                dest: 'dist/<%= pkg.name %>.min.css'
+            }
+        },
+        watch: {
+            less: {
+                files: ['less/**/*.less'],
+                tasks: ['less']
             },
-            minifyTheme: {
-                src: 'production/css/<%= pkg.name %>-theme.css',
-                dest: 'production/css/<%= pkg.name %>-theme.min.css'
+            css: {
+                files: ['dist/<%= pkg.name %>.css', 'docs/**/*.css','pages/**/*.css'],
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                }
+            },
+            html: {
+                files: ['docs/**/*.html', 'pages/**/*.html'],
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                }
+            }
+        },
+        connect: {
+            options: {
+                port: 9001,
+                // Change this to '0.0.0.0' to access the server from outside.
+                hostname: 'localhost',
+                livereload: 35729
+            },
+            default: {
+                options: {
+                    middleware: function (connect) {
+                        return [
+                            connect().use('/bower_components', connect.static('./bower_components')),
+                            connect().use('/dist', connect.static('./dist')),
+                            connect().use('/pages', connect.static('./pages')),
+                            connect.static('docs')
+                        ];
+                    }
+                }
+            }
+        },
+        assemble: {
+            options: {
+                assets: 'assets',
+                // metadata
+                data: ['data/*.{json,yml}'],
+
+                // templates
+                partials: ['templates/includes/*.hbs'],
+                layout: ['templates/layouts/default.hbs'],
+
+                // extensions
+                middlweare: ['assemble-middleware-permalinks'],
+            },
+            // This is really all you need!
+            pages: {
+                src: ['docs/*.hbs'],
+                dest: './'
             }
         }
     });
 
 
-
     // loading all 'grunt-*' tasks and dev dependencies
     require('load-grunt-tasks')(grunt, {scope: 'devDependencies'});
 
-    grunt.registerTask("default", ["clean","less:dev","file-creator:dev"]);
-    grunt.registerTask("dev", function(){
-        var pkg = grunt.file.readJSON('package.json');
-        grunt.file.write('examples/st.css', "@import url(\"../develop/css/"+ pkg.name+".css\");\r\n@import url(\"../develop/css/"+ pkg.name+"-theme.css\");");
-        grunt.task.run("clean","less:dev");
-    });
-
-   // grunt.registerTask("prod", ["clean","less:prod","cssmin"]);
-    grunt.registerTask("prod", function(){
-        var pkg = grunt.file.readJSON('package.json');
-        grunt.file.write('examples/st.css', "@import url(\"../production/css/"+ pkg.name+".css\");\r\n@import url(\"../production/css/"+ pkg.name+"-theme.css\");");
-        grunt.task.run("clean","less:prod","cssmin");
-    });
+    grunt.registerTask("default", ["clean","less","connect", "watch"]);
+    grunt.registerTask("test", ["clean","less","cssmin"]);
 };

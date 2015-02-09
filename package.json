@@ -47,6 +47,7 @@
         "grunt-csscomb": "~3.0.0",
         "grunt-reload": "~0.2.0",
         "time-grunt": "~1.0.0",
-        "load-grunt-tasks": "^0.6.0"
+        "load-grunt-tasks": "^0.6.0",
+        "grunt-assemble":"^0.1.15"
     }
 }

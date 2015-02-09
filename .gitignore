@@ -1,9 +1,7 @@
-production/**/*
-develop/**/
+dist
 node_modules/**/*
 bower_components/**/*
 .idea/**/*
-examples/style.css
 
 
 .DS_Store
